@@ -2,6 +2,7 @@
   "$schema": "./node_modules/nx/schemas/workspace-schema.json",
   "version": 2,
   "projects": {
+    "todo-back": "apps/todo-back",
     "todo-front": "apps/todo-front",
     "todo-front-e2e": "apps/todo-front-e2e"
   }
