@@ -5,7 +5,7 @@ const TodoSchema = new Schema({
   title: {
     type: String,
     required: true,
-    default: "pizza"
+    default: "to-do"
   },
   desc: {
     type: String,

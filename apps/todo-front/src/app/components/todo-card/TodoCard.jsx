@@ -17,54 +17,41 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 const TodoCard = ({ data }) => {
   const [todo, setTodo] = useState();
+  const [tempTodo, setTempTodo] = useState();
   const [todoStatus, setTodoStatus] = useState('');
-  const [todoTitle, setTodoTitle] = useState('');
-  const [todoDesc, setTodoDesc] = useState('');
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const handleSelectChange = (e) => {
-    setTodoStatus(e.target.value);
+    let tempTodo = {...todo}
+    tempTodo.status = e.target.value
+    setTodoStatus(e.target.value)
+    setTempTodo(tempTodo);
   };
 
   const handleTodoTitle = (e) => {
-    setTodoTitle(e.target.value);
+    let tempTodo = {...todo}
+    tempTodo.title = e.target.value
+    setTempTodo(tempTodo);
   };
 
   const handleTodoDesc = (e) => {
-    setTodoDesc(e.target.value);
+    let tempTodo = {...todo}
+    tempTodo.desc = e.target.value
+    setTempTodo(tempTodo);
   };
 
   const handleEdit = () => {
-    if (todoTitle === '' && todoDesc === '') {
-      setTodo({ ...todo, status: todoStatus });
-      handleClose();
-      return;
-    }
-
-    if (todoDesc === '') {
-      setTodo({ ...todo, status: todoStatus, title: todoTitle });
-      handleClose();
-      return;
-    }
-
-    if (todoTitle === '') {
-      setTodo({ ...todo, status: todoStatus, desc: todoDesc });
-      handleClose();
-      return;
-    }
-
-    // setTodo({ ...todo, title: todoTitle, status: todoStatus, desc: todoDesc });
-    // fetch(`http://localhost:3333/todo/edit/${todo._id}`, {
-    //   method: 'PUT',
-    //   headers: {
-    //     'Content-type': 'application/json',
-    //   },
-    //   body: JSON.stringify(todo),
-    // }).catch((e)=>{console.log(e)});
-
+    fetch(`http://localhost:3333/todo/edit/${todo._id}`, {
+       method: 'PUT',
+       headers: {
+         'Content-type': 'application/json',
+       },
+       body: JSON.stringify({title: tempTodo.title, desc: tempTodo.desc, status: todoStatus})
+    }).catch((e)=>{console.log(e)});
+    setTodo(tempTodo)
     handleClose();
   };
 
@@ -77,7 +64,7 @@ const TodoCard = ({ data }) => {
   useEffect(() => {
     setTodo(data);
     setTodoStatus(data.status);
-  }, [data]);
+  }, []);
 
   const style = {
     position: 'absolute',
@@ -86,7 +73,6 @@ const TodoCard = ({ data }) => {
     transform: 'translate(-50%, -50%)',
     width: 400,
     bgcolor: 'background.paper',
-    border: '2px solid #000',
     boxShadow: 24,
     p: 4,
   };
@@ -109,7 +95,6 @@ const TodoCard = ({ data }) => {
             >
               <TextField
                 defaultValue={todo?.title}
-                padding="0"
                 label="Title"
                 onChange={handleTodoTitle}
               />

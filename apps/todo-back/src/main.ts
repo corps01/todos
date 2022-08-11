@@ -39,9 +39,11 @@ app.post('/todo/new', (req, res) => {
 
  app.put('/todo/edit/:id', async(req,res)=>{
    const todo = await Todo.findByIdAndUpdate(req.params.id)
-   todo.title = req.body?.title
-   todo.desc = req.body?.desc
-   todo.status = req.body?.status
+   todo.title = req.body.title
+   todo.desc = req.body.desc
+   todo.status = req.body.status
+
+   todo.save().catch((e)=>{console.log(e)})
    res.json(todo)
  })
 
