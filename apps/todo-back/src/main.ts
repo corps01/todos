@@ -18,10 +18,32 @@ app.get('/api', (req, res) => {
   res.send({ message: 'Welcome to todo-back!' });
 });
 
-app.get('/todos',async (req, res) => {
-   const todos = await Todo.find();
-   res.json(todos)
- })
+
+const paginatedResults = () => {
+  return async (req, res, next) => {
+
+    const page = parseInt(req.query.page);
+    const limit = 15
+    const skipIndex = (page - 1) * limit;
+    const results = {todos: {}, totalTodos: {}};
+
+    try {
+      results.todos = await Todo.find()
+      .limit(limit)
+      .skip(skipIndex)
+      .exec();
+      results.totalTodos = await Todo.find().count()
+      res.paginatedResults = results;
+      next();
+    } catch (e) {
+      res.status(500).json({ message: "Error Occured" });
+    }
+  };
+}
+
+app.get("/todos", paginatedResults(), (req, res:any) => {
+  res.json(res.paginatedResults);
+});
 
 app.post('/todo/new', (req, res) => {
    const todo = new Todo({

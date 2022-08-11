@@ -53,7 +53,21 @@ const TodoCard = ({ data }) => {
     }).catch((e)=>{console.log(e)});
     setTodo(tempTodo)
     handleClose();
+    window.location.reload(false);
   };
+
+
+  const handleDelete = () => {
+    fetch(`http://localhost:3333/todo/delete/${todo._id}`, {
+       method: 'DELETE',
+       headers: {
+         'Content-type': 'application/json',
+       }
+    }).catch((e)=>{console.log(e)});
+    window.location.reload(false);
+  };
+
+
 
   const getStatusColor = () => {
     if (todo?.status === 'pending') return 'error';
@@ -132,7 +146,7 @@ const TodoCard = ({ data }) => {
                 onClick={() => {
                   Swal.fire({
                     title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
+                    text: "Note " + todo?.title + " will be lost",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -145,7 +159,7 @@ const TodoCard = ({ data }) => {
                         'Your file has been deleted.',
                         'success'
                       );
-                      handleClose();
+                      handleDelete();
                     }
                   });
                 }}
