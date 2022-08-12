@@ -16,6 +16,7 @@ app.use(cors());
 
 app.get('/api', (req, res) => {
   res.send({ message: 'Welcome to todo-back!' });
+  res.status(200)
 });
 
 
@@ -43,6 +44,7 @@ const paginatedResults = () => {
 
 app.get("/todos", paginatedResults(), (req, res:any) => {
   res.json(res.paginatedResults);
+  res.status(200)
 });
 
 app.post('/todo/new', (req, res) => {
@@ -51,12 +53,14 @@ app.post('/todo/new', (req, res) => {
      desc: req.body.desc
    });
    res.json(todo);
-   todo.save().catch((e)=>{console.log(e)});
+   todo.save().catch(()=>{res.status(500).json({ message: "Error Occured" });});
+   res.status(200)
  });
 
  app.delete('/todo/delete/:id', async(req,res)=>{
-   const result = await Todo.findByIdAndDelete(req.params.id)
+   const result = await Todo.findByIdAndDelete(req.params.id).catch(()=>{res.status(500).json({ message: "Error Occured" });})
    res.json(result)
+   res.status(200)
  })
 
  app.put('/todo/edit/:id', async(req,res)=>{
@@ -65,8 +69,9 @@ app.post('/todo/new', (req, res) => {
    todo.desc = req.body.desc
    todo.status = req.body.status
 
-   todo.save().catch((e)=>{console.log(e)})
+   todo.save().catch(()=>{res.status(500).json({ message: "Error Occured" });});
    res.json(todo)
+   res.status(200)
  })
 
 
